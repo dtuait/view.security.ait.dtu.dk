@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import './UnfamiliarLoginPage.css';
+import { InteractiveWorldMap } from './InteractiveWorldMap';
 
 interface UnfamiliarLoginPageProps {
   accessToken?: string | null;
@@ -19,122 +20,138 @@ interface LoginLocation {
   isFamiliar: boolean;
 }
 
+interface MapLocation {
+  id: string;
+  location: string;
+  city: string;
+  country: string;
+  isFamiliar: boolean;
+  riskLevel?: string;
+  timestamp: string;
+}
+
 interface DiagnosedSignIn {
   id: string;
   location: string;
-  riskLevel: 'Low' | 'Medium' | 'High';
-  timestamp: string;
+  riskLevel: string;
   details: string;
   action: string;
+  timestamp: string;
 }
 
 const UnfamiliarLoginPage: React.FC<UnfamiliarLoginPageProps> = ({ accessToken, onClose }) => {
   const [loginLocations, setLoginLocations] = useState<LoginLocation[]>([]);
   const [diagnosedSignIns, setDiagnosedSignIns] = useState<DiagnosedSignIn[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [showMap, setShowMap] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showMap, setShowMap] = useState(false);
 
-  // Mock data for demonstration - replace with actual API calls
-  useEffect(() => {
-    if (accessToken) {
-      loadMockData();
+  // Mock data for demonstration
+  const mockLoginLocations: LoginLocation[] = [
+    {
+      id: '1',
+      location: 'New York, United States',
+      city: 'New York',
+      country: 'United States',
+      ipAddress: '192.168.1.100',
+      timestamp: '2024-10-15T10:30:00Z',
+      isFamiliar: true
+    },
+    {
+      id: '2',
+      location: 'Beijing, China',
+      city: 'Beijing',
+      country: 'China',
+      ipAddress: '10.0.0.50',
+      timestamp: '2024-10-12T08:45:00Z',
+      isFamiliar: true
+    },
+    {
+      id: '3',
+      location: 'Moscow, Russia',
+      city: 'Moscow',
+      country: 'Russia',
+      ipAddress: '172.16.0.25',
+      timestamp: '2024-10-10T14:20:00Z',
+      isFamiliar: false
+    },
+    {
+      id: '4',
+      location: 'Tokyo, Japan',
+      city: 'Tokyo',
+      country: 'Japan',
+      ipAddress: '203.0.113.15',
+      timestamp: '2024-10-08T16:15:00Z',
+      isFamiliar: true
     }
+  ];
+
+  const mockDiagnosedSignIns: DiagnosedSignIn[] = [
+    {
+      id: '1',
+      location: 'Lagos, Nigeria',
+      riskLevel: 'High',
+      details: 'Unusual login pattern detected from new geographic location with suspicious IP reputation.',
+      action: 'Account temporarily locked, MFA verification required',
+      timestamp: '2024-10-14T03:22:00Z'
+    },
+    {
+      id: '2',
+      location: 'São Paulo, Brazil',
+      riskLevel: 'Medium',
+      details: 'First-time login from this location with different browser fingerprint than usual.',
+      action: 'Email notification sent, session monitored',
+      timestamp: '2024-10-11T19:45:00Z'
+    },
+    {
+      id: '3',
+      location: 'Mumbai, India',
+      riskLevel: 'High',
+      details: 'Multiple failed login attempts followed by successful authentication from high-risk IP.',
+      action: 'Account locked, password reset required',
+      timestamp: '2024-10-09T11:30:00Z'
+    }
+  ];
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        // Simulate API call delay
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // In a real application, you would make API calls here
+        // const locationsResponse = await fetch('/api/login-locations', { headers: { Authorization: `Bearer ${accessToken}` } });
+        // const diagnosedResponse = await fetch('/api/diagnosed-signins', { headers: { Authorization: `Bearer ${accessToken}` } });
+        
+        setLoginLocations(mockLoginLocations);
+        setDiagnosedSignIns(mockDiagnosedSignIns);
+      } catch (error) {
+        console.error('Error fetching unfamiliar login data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
   }, [accessToken]);
 
-  const loadMockData = () => {
-    setIsLoading(true);
-    
-    // Simulate API delay
-    setTimeout(() => {
-      // Mock login locations data
-      const mockLocations: LoginLocation[] = [
-        {
-          id: '1',
-          location: 'Copenhagen, Denmark',
-          city: 'Copenhagen',
-          country: 'Denmark',
-          ipAddress: '192.168.1.100',
-          timestamp: '2024-10-20T10:30:00Z',
-          isFamiliar: true
-        },
-        {
-          id: '2',
-          location: 'Lyngby, Denmark',
-          city: 'Lyngby',
-          country: 'Denmark',
-          ipAddress: '130.226.142.10',
-          timestamp: '2024-10-19T14:22:00Z',
-          isFamiliar: true
-        },
-        {
-          id: '3',
-          location: 'Stockholm, Sweden',
-          city: 'Stockholm',
-          country: 'Sweden',
-          ipAddress: '85.224.45.120',
-          timestamp: '2024-10-18T09:15:00Z',
-          isFamiliar: false
-        },
-        {
-          id: '4',
-          location: 'Berlin, Germany',
-          city: 'Berlin',
-          country: 'Germany',
-          ipAddress: '46.101.123.45',
-          timestamp: '2024-10-17T16:45:00Z',
-          isFamiliar: false
-        }
-      ];
-
-      // Mock diagnosed sign-ins data
-      const mockDiagnosed: DiagnosedSignIn[] = [
-        {
-          id: '1',
-          location: 'Moscow, Russia',
-          riskLevel: 'High',
-          timestamp: '2024-10-16T03:22:00Z',
-          details: 'Login attempt from unusual location with suspicious activity patterns',
-          action: 'Blocked automatically'
-        },
-        {
-          id: '2',
-          location: 'Lagos, Nigeria',
-          riskLevel: 'High',
-          timestamp: '2024-10-15T11:30:00Z',
-          details: 'Multiple failed login attempts followed by successful login',
-          action: 'User notified, session terminated'
-        },
-        {
-          id: '3',
-          location: 'New York, USA',
-          riskLevel: 'Medium',
-          timestamp: '2024-10-14T20:18:00Z',
-          details: 'Login from new device and location during unusual hours',
-          action: 'Additional verification required'
-        }
-      ];
-
-      setLoginLocations(mockLocations);
-      setDiagnosedSignIns(mockDiagnosed);
-      setIsLoading(false);
-    }, 1000);
-  };
-
-  const formatDate = (timestamp: string) => {
-    return new Date(timestamp).toLocaleString('en-DK', {
-      year: 'numeric',
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    return date.toLocaleString('en-US', {
       month: 'short',
       day: 'numeric',
+      year: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
+      timeZoneName: 'short'
     });
   };
 
-  const getRiskColor = (riskLevel: string) => {
-    switch (riskLevel) {
-      case 'High': return '#ef4444';
-      case 'Medium': return '#f59e0b';
-      case 'Low': return '#10b981';
+  const getRiskColor = (riskLevel: string): string => {
+    switch (riskLevel.toLowerCase()) {
+      case 'high': return '#ef4444';
+      case 'medium': return '#f59e0b';
+      case 'low': return '#10b981';
       default: return '#6b7280';
     }
   };
@@ -253,57 +270,32 @@ const UnfamiliarLoginPage: React.FC<UnfamiliarLoginPageProps> = ({ accessToken, 
                   </div>
                 </div>
               ) : (
-                /* World Map View */
+                /* Interactive World Map View */
                 <div className="map-view">
-                  <div className="map-container">
-                    <div className="world-map">
-                      <h3>🗺️ Global Login Activity Map</h3>
-                      <p>Interactive visualization of login locations worldwide</p>
-                      
-                      <div className="map-placeholder">
-                        <div className="map-info">
-                          <div className="map-icon">🌍</div>
-                          <h4>World Map Visualization</h4>
-                          <p>This feature integrates with Google Workspace API to display login locations on an interactive world map.</p>
-                          
-                          <div className="location-markers">
-                            {[...loginLocations.map(l => ({
-                              id: l.id,
-                              location: l.location,
-                              country: l.country,
-                              isFamiliar: l.isFamiliar,
-                              riskLevel: undefined as string | undefined
-                            })), ...diagnosedSignIns.map(s => ({
-                              id: s.id + '_threat',
-                              location: s.location,
-                              country: s.location.split(', ')[1] || s.location,
-                              isFamiliar: false,
-                              riskLevel: s.riskLevel
-                            }))].map((location) => (
-                              <div key={location.id} className={`map-marker ${location.isFamiliar ? 'safe' : 'threat'}`}>
-                                <div className="marker-icon">
-                                  {location.isFamiliar ? '📍' : '⚠️'}
-                                </div>
-                                <div className="marker-info">
-                                  <strong>{location.location}</strong>
-                                  {location.riskLevel && <span className="risk-level">{location.riskLevel} Risk</span>}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                          
-                          <div className="integration-note">
-                            <p><strong>🔗 Google Workspace Integration:</strong></p>
-                            <p>To enable full map functionality, integrate with:</p>
-                            <ul>
-                              <li>Google Maps JavaScript API</li>
-                              <li>Google Workspace Security Center API</li>
-                              <li>Geolocation services for IP mapping</li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                  <div className="interactive-map-container">
+
+                    
+                    {/* Interactive MapLibre World Map */}
+                    <InteractiveWorldMap
+                      loginLocations={loginLocations.map(l => ({
+                        ...l,
+                        timestamp: new Date(l.timestamp)
+                      }))}
+                      diagnosedSignIns={diagnosedSignIns.map(s => ({
+                        ...s,
+                        timestamp: new Date(s.timestamp)
+                      }))}
+                      formatDate={(date: Date) => date.toLocaleString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        timeZoneName: 'short'
+                      })}
+                    />
+
+                    
                   </div>
                 </div>
               )}
