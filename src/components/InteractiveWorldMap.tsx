@@ -31,8 +31,8 @@ export const InteractiveWorldMap: React.FC<InteractiveWorldMapProps> = ({
 }) => {
   const mapRef = useRef<any>(null);
   const [viewState, setViewState] = useState({
-    longitude: 12.5683, // Denmark longitude
-    latitude: 55.6761,  // Denmark latitude
+    longitude: 12.5054, // DTU Lundtoftegårdsvej longitude
+    latitude: 55.7859,  // DTU Lundtoftegårdsvej latitude
     zoom: 2,
     pitch: 0,
     bearing: 0
@@ -79,7 +79,7 @@ export const InteractiveWorldMap: React.FC<InteractiveWorldMapProps> = ({
   ];
 
   // Create connection lines from DTU to each location
-  const dtuCoordinates: [number, number] = [12.5683, 55.6761]; // Lyngby, Denmark
+  const dtuCoordinates: [number, number] = [12.5054, 55.7859]; // DTU Lundtoftegårdsvej 93A, Kongens Lyngby
   
   const connectionLines = {
     type: 'FeatureCollection' as const,
@@ -127,14 +127,14 @@ export const InteractiveWorldMap: React.FC<InteractiveWorldMapProps> = ({
           background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
           border: '1px solid #0ea5e9',
           borderRadius: '12px',
-          padding: '16px',
+          padding: '12px',
           textAlign: 'center',
           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)'
         }}>
-          <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#0369a1', marginBottom: '4px' }}>
+          <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#0369a1', marginBottom: '2px' }}>
             {totalLoginLocations}
           </div>
-          <div style={{ fontSize: '14px', color: '#0369a1', fontWeight: '500' }}>
+          <div style={{ fontSize: '13px', color: '#0369a1', fontWeight: '500' }}>
             Login Locations
           </div>
         </div>
@@ -143,14 +143,14 @@ export const InteractiveWorldMap: React.FC<InteractiveWorldMapProps> = ({
           background: 'linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)',
           border: '1px solid #f87171',
           borderRadius: '12px',
-          padding: '16px',
+          padding: '12px',
           textAlign: 'center',
           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)'
         }}>
-          <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#dc2626', marginBottom: '4px' }}>
+          <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#dc2626', marginBottom: '2px' }}>
             {securityThreats}
           </div>
-          <div style={{ fontSize: '14px', color: '#dc2626', fontWeight: '500' }}>
+          <div style={{ fontSize: '13px', color: '#dc2626', fontWeight: '500' }}>
             Security Threats
           </div>
         </div>
@@ -159,14 +159,14 @@ export const InteractiveWorldMap: React.FC<InteractiveWorldMapProps> = ({
           background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)',
           border: '1px solid #4ade80',
           borderRadius: '12px',
-          padding: '16px',
+          padding: '12px',
           textAlign: 'center',
           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)'
         }}>
-          <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#16a34a', marginBottom: '4px' }}>
+          <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#16a34a', marginBottom: '2px' }}>
             {trustedLocations}
           </div>
-          <div style={{ fontSize: '14px', color: '#16a34a', fontWeight: '500' }}>
+          <div style={{ fontSize: '13px', color: '#16a34a', fontWeight: '500' }}>
             Trusted Locations
           </div>
         </div>
@@ -184,9 +184,13 @@ export const InteractiveWorldMap: React.FC<InteractiveWorldMapProps> = ({
           sources: {
             osm: {
               type: 'raster',
-              tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+              tiles: [
+                'https://cartodb-basemaps-a.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png',
+                'https://cartodb-basemaps-b.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png',
+                'https://cartodb-basemaps-c.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png'
+              ],
               tileSize: 256,
-              attribution: '© OpenStreetMap contributors'
+              attribution: '© OpenStreetMap contributors © CartoDB'
             }
           },
           layers: [
@@ -195,8 +199,7 @@ export const InteractiveWorldMap: React.FC<InteractiveWorldMapProps> = ({
               type: 'raster',
               source: 'osm'
             }
-          ],
-          glyphs: 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf'
+          ]
         }}
         attributionControl={false}
       >
@@ -207,9 +210,9 @@ export const InteractiveWorldMap: React.FC<InteractiveWorldMapProps> = ({
             type="line"
             filter={['==', ['get', 'type'], 'login']}
             paint={{
-              'line-color': 'rgba(34, 197, 94, 0.3)',
-              'line-width': 2,
-              'line-opacity': 0.6
+              'line-color': 'rgba(34, 197, 94, 0.4)',
+              'line-width': 3,
+              'line-opacity': 0.7
             }}
           />
           <Layer
@@ -227,22 +230,53 @@ export const InteractiveWorldMap: React.FC<InteractiveWorldMapProps> = ({
         {/* DTU Hub Marker */}
         <Marker longitude={dtuCoordinates[0]} latitude={dtuCoordinates[1]} anchor="center">
           <div style={{
-            width: '60px',
-            height: '60px',
-            background: 'linear-gradient(45deg, #3b82f6, #1d4ed8)',
+            width: '38px',
+            height: '38px',
+            background: 'linear-gradient(45deg, rgba(59, 130, 246, 0.8), rgba(29, 78, 216, 0.8))',
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '24px',
+            fontSize: '16px',
             color: 'white',
-            boxShadow: '0 0 20px rgba(59, 130, 246, 0.6)',
-            border: '3px solid white',
+            boxShadow: '0 0 12px rgba(59, 130, 246, 0.3)',
+            border: '1px solid rgba(255, 255, 255, 0.8)',
             animation: 'hubPulse 2s ease-in-out infinite'
           }}>
             🏢
           </div>
         </Marker>
+
+        {/* Country Labels */}
+        {viewState.zoom <= 4 && [
+          { name: 'USA', coord: [-95, 40] },
+          { name: 'CHINA', coord: [105, 35] },
+          { name: 'RUSSIA', coord: [37, 60] },
+          { name: 'INDIA', coord: [77, 20] },
+          { name: 'BRAZIL', coord: [-55, -10] },
+          { name: 'AUSTRALIA', coord: [151, -27] },
+          { name: 'CANADA', coord: [-106, 56] },
+          { name: 'GERMANY', coord: [10, 51] }
+        ].map((country, index) => (
+          <Marker
+            key={`country-${index}`}
+            longitude={country.coord[0]}
+            latitude={country.coord[1]}
+            anchor="center"
+          >
+            <div style={{
+              color: '#6b7280',
+              fontWeight: '500',
+              fontSize: '11px',
+              textShadow: '1px 1px 2px white, -1px -1px 1px white, 1px -1px 1px white, -1px 1px 1px white',
+              letterSpacing: '0.05em',
+              pointerEvents: 'none',
+              userSelect: 'none'
+            }}>
+              {country.name}
+            </div>
+          </Marker>
+        ))}
 
         {/* Location Markers */}
         {allLocations.map((location) => (
@@ -254,21 +288,21 @@ export const InteractiveWorldMap: React.FC<InteractiveWorldMapProps> = ({
           >
             <div
               style={{
-                width: '18px',
-                height: '18px',
+                width: '24px',
+                height: '24px',
                 background: location.type === 'threat' 
-                  ? 'rgba(239, 68, 68, 0.75)'
-                  : 'rgba(34, 197, 94, 0.5)',
+                  ? 'rgba(239, 68, 68, 0.6)'
+                  : 'rgba(34, 197, 94, 0.7)',
                 borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '9px',
+                fontSize: '11px',
                 color: 'white',
                 boxShadow: location.type === 'threat'
                   ? '0 0 6px rgba(239, 68, 68, 0.3)'
                   : '0 0 4px rgba(34, 197, 94, 0.2)',
-                border: location.type === 'threat' ? '1px solid rgba(220, 38, 38, 0.8)' : '1px solid rgba(255, 255, 255, 0.6)',
+                border: location.type === 'threat' ? '1px solid rgba(220, 38, 38, 0.6)' : '1px solid rgba(255, 255, 255, 0.5)',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
                 animation: location.type === 'threat' ? 'threatPulse 2s ease-in-out infinite' : 'safeDot 1s ease-in-out'
@@ -297,8 +331,12 @@ export const InteractiveWorldMap: React.FC<InteractiveWorldMapProps> = ({
               backdropFilter: 'blur(10px)',
               padding: '12px',
               borderRadius: '8px',
-              border: '1px solid rgba(0, 0, 0, 0.1)',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+              border: hoveredLocation.type === 'threat' 
+                ? '2px solid rgba(239, 68, 68, 0.8)'
+                : '2px solid rgba(34, 197, 94, 0.8)',
+              boxShadow: hoveredLocation.type === 'threat'
+                ? '0 4px 12px rgba(239, 68, 68, 0.3), 0 0 15px rgba(239, 68, 68, 0.2)'
+                : '0 4px 12px rgba(34, 197, 94, 0.3), 0 0 15px rgba(34, 197, 94, 0.2)',
               minWidth: '200px',
               fontSize: '14px'
             }}>
@@ -334,8 +372,8 @@ export const InteractiveWorldMap: React.FC<InteractiveWorldMapProps> = ({
             width: '16px',
             height: '16px',
             borderRadius: '50%',
-            background: 'rgba(34, 197, 94, 0.5)',
-            border: '1px solid rgba(255, 255, 255, 0.6)'
+            background: 'rgba(34, 197, 94, 0.7)',
+            border: '1px solid rgba(255, 255, 255, 0.5)'
           }}></div>
           <span>Trusted Locations</span>
         </div>
@@ -345,24 +383,24 @@ export const InteractiveWorldMap: React.FC<InteractiveWorldMapProps> = ({
             width: '16px',
             height: '16px',
             borderRadius: '50%',
-            background: 'rgba(239, 68, 68, 0.75)',
-            border: '1px solid rgba(220, 38, 38, 0.8)'
+            background: 'rgba(239, 68, 68, 0.6)',
+            border: '1px solid rgba(220, 38, 38, 0.6)'
           }}></div>
           <span>Security Threats</span>
         </div>
         
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div style={{
-            width: '20px',
-            height: '20px',
+            width: '18px',
+            height: '18px',
             borderRadius: '50%',
-            background: 'linear-gradient(45deg, #3b82f6, #1d4ed8)',
+            background: 'linear-gradient(45deg, rgba(59, 130, 246, 0.8), rgba(29, 78, 216, 0.8))',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '10px'
+            fontSize: '9px'
           }}>🏢</div>
-          <span>DTU AIT-SOC, Lyngby</span>
+          <span>DTU AIT-SOC, Lundtoftegårdsvej</span>
         </div>
       </div>
 
