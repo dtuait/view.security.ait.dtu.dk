@@ -20,15 +20,7 @@ interface LoginLocation {
   isFamiliar: boolean;
 }
 
-interface MapLocation {
-  id: string;
-  location: string;
-  city: string;
-  country: string;
-  isFamiliar: boolean;
-  riskLevel?: string;
-  timestamp: string;
-}
+
 
 interface DiagnosedSignIn {
   id: string;
