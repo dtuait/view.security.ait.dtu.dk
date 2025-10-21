@@ -144,7 +144,7 @@ const Dashboard: React.FC = () => {
             {/* Check Unfamiliar Login Card */}
             <div className={`card ${authStatus !== 'ready' ? 'disabled' : ''}`} onClick={handleUnfamiliarLogin}>
               <div className="card-icon">🔍</div>
-              <h3>Check Unfamiliar Login</h3>
+              <h3>Check Unfamiliar<br />Login</h3>
               <p>View login locations and diagnosed unfamiliar sign-ins</p>
             </div>
 
